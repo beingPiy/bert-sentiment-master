@@ -1,14 +1,11 @@
 import config
-import flask
 from flask import Flask, render_template, request, url_for
-from flask import request
 from model import BERTClass
 import functools
 import torch.nn as nn
 import numpy as np
 import pandas as pd
 import torch
-from transformers import BertTokenizer, AutoConfig, AutoModel
 from sklearn.metrics.pairwise import cosine_similarity
 
 
