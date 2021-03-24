@@ -1,6 +1,6 @@
 import config
 import flask
-from flask import Flask
+from flask import Flask, render_template, request, url_for
 from flask import request
 from model import BERTClass
 import functools
@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 import torch
 from transformers import BertTokenizer, AutoConfig, AutoModel
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 app = Flask(__name__)
@@ -35,35 +36,33 @@ def sentence_prediction(sentence):
 
     outputs = MODEL(ids, mask, token_type_ids)
     outputs = np.array(torch.sigmoid(outputs).detach().cpu())
-    return outputs[0][0]
+    ones = np.ones((709, 6))
+    outputs = outputs*ones
+    return outputs
 
 
-@app.route("/predict")
+@app.route("/")
+def index():
+    return render_template('index.html')
+
+@app.route("/predict", methods=['POST'])
 def predict():
-    sentence = request.args.get("sentence")
-    ################################################################
-    # CODE to be used
+    if request.method == 'POST':
+        sentence = request.form("text")
 
-    # movie_df = pd.read_csv("../input/imdb-analysis/movies.csv")
-    # from sklearn.metrics.pairwise import cosine_similarity
-    # ones = np.ones((709, 6))
-    # outputs = outputs*ones
-    # similarity = cosine_similarity(outputs, movie_df[['anger', 'disgust', 'fear', 'joy', 'sadness', 'surprise']].values)
-    # movie_df['similarity'] = similarity[0]
-    # movie_df.sort_values(by=['similarity', 'avg_vote', 'year'], ascending=False).head(10)
+        prediction = sentence_prediction(sentence)
+        movie_df = pd.read_csv("/inputs/movies.csv")
+        similarity = cosine_similarity(prediction, movie_df[['anger', 'disgust', 'fear', 'joy', 'sadness', 'surprise']].values)
+        movie_df['similarity'] = similarity[0]
+        result = movie_df.sort_values(by=['similarity', 'avg_vote', 'year'], ascending=False).head(10)
 
+        m1 = result.loc[0 , 'original_title']
+        m2 = result.loc[1 , 'original_title']
+        m3 = result.loc[2 , 'original_title']
+        m4 = result.loc[3 , 'original_title']
+        m5 = result.loc[4 , 'original_title']
 
-
-
-
-
-    # prediction = sentence_prediction(sentence)
-    # processing of prediction
-    response = {}
-    # response["response"] = {
-    #     movie list
-    # }
-    return flask.jsonify(response)
+    return render_template('results.html', movie_1 = m1, movie_2 = m2, movie_3 = m3, movie_4 = m4, movie_5 = m5 )
 
 
 if __name__ == "__main__":
