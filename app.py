@@ -25,9 +25,9 @@ def sentence_prediction(sentence):
             return_token_type_ids=True
         )
 
-    ids = torch.tensor(inputs['input_ids'], dtype=torch.long).unsqueeze(dim=0).to(config.DEVICE)
-    mask = torch.tensor(inputs['attention_mask'], dtype=torch.long).unsqueeze(dim=0).to(config.DEVICE)
-    token_type_ids = torch.tensor(inputs["token_type_ids"], dtype=torch.long).unsqueeze(dim=0).to(config.DEVICE)
+    ids = torch.Tensor(inputs['input_ids'], dtype=torch.long).unsqueeze(dim=0).to(config.DEVICE)
+    mask = torch.Tensor(inputs['attention_mask'], dtype=torch.long).unsqueeze(dim=0).to(config.DEVICE)
+    token_type_ids = torch.Tensor(inputs["token_type_ids"], dtype=torch.long).unsqueeze(dim=0).to(config.DEVICE)
 
 
     outputs = MODEL(ids, mask, token_type_ids)
