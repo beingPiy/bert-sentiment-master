@@ -1,12 +1,11 @@
-import config
-from flask import Flask, render_template, request, url_for
-from model import BERTClass
-import functools
-import torch.nn as nn
+from flask import Flask, render_template, request
 import numpy as np
 import pandas as pd
 import torch
 from sklearn.metrics.pairwise import cosine_similarity
+import config
+from model import BERTClass
+
 
 
 app = Flask(__name__)
