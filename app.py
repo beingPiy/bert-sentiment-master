@@ -63,7 +63,7 @@ def predict():
 
 if __name__ == "__main__":
     MODEL = BERTClass()
-    MODEL.load_state_dict(torch.load(config.MODEL_PATH))
     MODEL.to(config.DEVICE)
+    MODEL.load_state_dict(torch.load(config.MODEL_PATH))
     MODEL.eval()
     app.run(host="0.0.0.0", port="9999")
