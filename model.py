@@ -1,4 +1,3 @@
-import config
 from transformers import AutoConfig, AutoModel
 import torch
 
